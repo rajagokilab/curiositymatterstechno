@@ -1,0 +1,177 @@
+{% extends 'agency/base.html' %}
+
+{% block content %}
+<style>
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    .float-badge { animation: softFloat 4.5s ease-in-out infinite; }
+    @keyframes softFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    .contact-card { transition: box-shadow 0.35s ease, transform 0.35s ease; }
+    .contact-card:hover { box-shadow: 0 16px 34px -18px rgba(74,51,36,0.4); }
+
+    .contact-row { transition: transform 0.25s ease, background 0.25s ease; }
+    .contact-row:hover { transform: translateX(4px); background: var(--beige); }
+
+    input, textarea {
+        background: #fff; border: 1px solid var(--beige); border-radius: 0.5rem;
+        padding: 0.65rem 1rem; width: 100%; transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    input:focus, textarea:focus {
+        outline: none; border-color: var(--caramel); box-shadow: 0 0 0 3px rgba(150,104,63,0.18);
+    }
+
+    /* Animated illustration: an envelope with orbiting spark + drifting dots */
+    #mail-illustration { display:block; margin: 0 auto 1.75rem; }
+    .orbit { transform-origin: 100px 78px; animation: orbitSpin 7s linear infinite; }
+    @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .mail-flap { animation: flapPulse 3.2s ease-in-out infinite; transform-origin: 100px 68px; }
+    @keyframes flapPulse { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+    .drift-dot { animation: driftDot 5s ease-in-out infinite; }
+    @keyframes driftDot { 0%,100% { transform: translateY(0); opacity:.5; } 50% { transform: translateY(-8px); opacity:1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal { opacity: 1 !important; transform: none !important; }
+        .float-badge, .orbit, .mail-flap, .drift-dot { animation: none !important; }
+    }
+</style>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 max-w-5xl mx-auto items-start px-4">
+
+    <!-- Dynamic Left Hand Contact Text -->
+    <div class="mb-4 md:mb-0 reveal">
+
+        <!-- Animated illustration -->
+        <svg id="mail-illustration" width="150" height="120" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="giltMail" x1="20" y1="20" x2="180" y2="120" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#d9a361"/>
+                    <stop offset="1" stop-color="#96683f"/>
+                </linearGradient>
+            </defs>
+            <circle cx="100" cy="78" r="52" fill="var(--beige)" opacity="0.5"/>
+            <rect x="46" y="52" width="108" height="72" rx="10" fill="#fdfaf3" stroke="url(#giltMail)" stroke-width="2"/>
+            <path class="mail-flap" d="M46 58 L100 92 L154 58" fill="none" stroke="var(--espresso)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <g class="orbit">
+                <path d="M100 22 L102.6 27.6 L108.8 28.4 L104.4 32.8 L105.6 39 L100 36 L94.4 39 L95.6 32.8 L91.2 28.4 L97.4 27.6 Z" fill="url(#giltMail)"/>
+            </g>
+            <circle class="drift-dot" cx="34" cy="40" r="3" fill="var(--copper)" style="animation-delay:.2s"/>
+            <circle class="drift-dot" cx="168" cy="100" r="2.5" fill="var(--caramel)" style="animation-delay:1.4s"/>
+            <circle class="drift-dot" cx="30" cy="110" r="2" fill="var(--caramel)" style="animation-delay:.8s"/>
+        </svg>
+
+       <div class="text-center md:text-left">
+    
+    <span class="float-badge inline-block px-4 py-1.5 rounded-full bg-[#e8e2d4] text-[#596235] text-xs font-bold tracking-[0.2em] uppercase mb-8"
+          data-i18n data-en="Get in touch" data-sv="Kontakta oss">
+        Get in touch
+    </span>
+
+    <h1 class="font-serif text-5xl md:text-6xl text-[#3d362d] mb-6 leading-[1.1]">
+        {% if page_settings.heading %}
+            {{ page_settings.heading }}
+        {% else %}
+            <span data-i18n data-en="Tell us about your project" data-sv="Berätta om ditt projekt">
+                Tell us about your project
+            </span>
+        {% endif %}
+    </h1>
+    
+    <p class="mb-8 text-lg md:text-xl text-[#7a7268] leading-relaxed">
+        {% if page_settings.subheading %}
+            {{ page_settings.subheading }}
+        {% else %}
+            <span data-i18n data-en="Fill out the form and we'll reply within one business day, or reach us directly below." data-sv="Fyll i formuläret så svarar vi inom en arbetsdag, eller kontakta oss direkt nedan.">
+                Fill out the form and we'll reply within one business day, or reach us directly below.
+            </span>
+        {% endif %}
+    </p>
+</div>
+
+        <div class="space-y-3 text-sm font-medium">
+            <div class="contact-row flex items-center gap-3 rounded-lg px-3 py-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background:var(--beige);">✉️</span>
+                <span style="color:var(--espresso);">{{ page_settings.email_address|default:"curiositytechmatters@gmail.com" }}</span>
+            </div>
+            <div class="contact-row flex items-center gap-3 rounded-lg px-3 py-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background:var(--beige);">📞</span>
+                <span style="color:var(--espresso);">{{ page_settings.phone_number|default:"+46 00 000 00 00" }}</span>
+            </div>
+            <div class="contact-row flex items-center gap-3 rounded-lg px-3 py-2.5">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full shrink-0" style="background:var(--beige);">📍</span>
+                <span style="color:var(--espresso);">{{ page_settings.location|default:"Södertälje, Sweden" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secure Right Hand Contact Form Card -->
+    <div class="contact-card reveal border p-6 md:p-8 rounded-2xl shadow-sm"
+         style="border-color:var(--beige); background:var(--cream); transition-delay:150ms;">
+        <form method="POST" action="{% url 'contact' %}" class="space-y-5">
+            {% csrf_token %} <!-- Mandatory security layer preventing Cross-Site Request Forgery -->
+
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color:var(--coffee);"
+                       data-i18n data-en="Name" data-sv="Namn">Name</label>
+                <input type="text" name="name" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color:var(--coffee);"
+                       data-i18n data-en="Email" data-sv="E-post">Email</label>
+                <input type="email" name="email" required>
+            </div>
+
+            <!-- NEW REQUIRED PHONE NUMBER FIELD -->
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color:var(--coffee);"
+                       data-i18n data-en="Phone number" data-sv="Telefonnummer">Phone number</label>
+                <input type="tel" name="phone_number" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color:var(--coffee);"
+                       data-i18n data-en="Project type" data-sv="Projekttyp">Project type</label>
+                <input type="text" name="project_type" required>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1.5" style="color:var(--coffee);"
+                       data-i18n data-en="Message" data-sv="Meddelande">Message</label>
+                <textarea name="message" rows="4" required class="resize-y"></textarea>
+            </div>
+
+            <button type="submit"
+                    class="w-full py-3 md:py-3.5 rounded-lg font-medium transition duration-200 mt-2 hover:scale-[1.02]"
+                    style="background:var(--espresso); color:var(--cream);"
+                    data-i18n data-en="Send message" data-sv="Skicka meddelande">
+                Send message
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const items = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) {
+            items.forEach(el => el.classList.add('is-visible'));
+            return;
+        }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        items.forEach(el => observer.observe(el));
+
+        if (window.setLanguage && document.documentElement.lang === 'sv') {
+            window.setLanguage('sv');
+        }
+    })();
+</script>
+{% endblock %}

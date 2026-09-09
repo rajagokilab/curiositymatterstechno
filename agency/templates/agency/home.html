@@ -1,0 +1,627 @@
+{% extends 'agency/base.html' %}
+
+{% block content %}
+<!-- ============ THEME STYLES ============ -->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap');
+
+    .studio-wrap { font-family: 'Work Sans', sans-serif; color: #3b2a1e; overflow-x: hidden; }
+    .studio-wrap h1, .studio-wrap h2, .studio-wrap h3 { font-family: 'Fraunces', serif; }
+
+    /* ---- animated hero blob ---- */
+    .hero-blob {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+    .hero-blob span {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        opacity: 0.55;
+        animation: driftBlob 16s ease-in-out infinite;
+    }
+    .hero-blob span.b1 {
+        width: 260px; height: 260px;
+        top: -80px; left: 4%;
+        background: radial-gradient(circle at 30% 30%, #c99a5f, #a9773f 70%);
+        animation-delay: 0s;
+    }
+    .hero-blob span.b2 {
+        width: 200px; height: 200px;
+        top: 40px; right: 2%;
+        background: radial-gradient(circle at 60% 40%, #6b4a30, #4a3220 75%);
+        opacity: 0.35;
+        animation-delay: -6s;
+    }
+    @media (min-width: 768px) {
+        .hero-blob span.b1 { width: 420px; height: 420px; top: -120px; left: 8%; }
+        .hero-blob span.b2 { width: 320px; height: 320px; top: 60px; right: 6%; }
+    }
+    @keyframes driftBlob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(20px, 25px) scale(1.08); }
+        66% { transform: translate(-15px, -10px) scale(0.95); }
+    }
+
+    /* ---- grain texture overlay for warmth ---- */
+    .grain-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0.05;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ---- scroll reveal ---- */
+    .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ---- underline squiggle for highlighted word ---- */
+    .squiggle-underline {
+        position: relative;
+        display: inline-block;
+    }
+    .squiggle-underline svg {
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        height: 14px;
+        overflow: visible;
+    }
+    .squiggle-underline path {
+        stroke-dasharray: 300;
+        stroke-dashoffset: 300;
+        animation: drawLine 1.4s 0.6s ease forwards;
+    }
+    @keyframes drawLine {
+        to { stroke-dashoffset: 0; }
+    }
+
+    /* ---- card lift + tilt ---- */
+    .brown-card {
+        transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .brown-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px -12px rgba(74, 50, 32, 0.25);
+        border-color: #b1703c;
+    }
+
+    .project-card img, .project-card .thumb-fallback {
+        transition: transform 0.6s ease;
+    }
+    .project-card:hover img,
+    .project-card:hover .thumb-fallback {
+        transform: scale(1.06);
+    }
+
+    .cta-btn {
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+    .cta-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -8px rgba(74, 47, 28, 0.4);
+    }
+
+    /* ---- icon badges ---- */
+    .icon-badge {
+        width: 52px;
+        height: 52px;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ecdfc2, #d8c19a);
+        box-shadow: inset 0 0 0 1px rgba(139, 75, 35, 0.18);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    @media (min-width: 768px) {
+        .icon-badge { width: 60px; height: 60px; margin-bottom: 1.25rem; }
+    }
+    .brown-card:hover .icon-badge {
+        transform: scale(1.08) rotate(-4deg);
+        box-shadow: 0 10px 22px -8px rgba(139, 75, 35, 0.4), inset 0 0 0 1px rgba(139, 75, 35, 0.3);
+    }
+    .icon-svg {
+        width: 24px;
+        height: 24px;
+        color: #8a4b23;
+    }
+    @media (min-width: 768px) {
+        .icon-svg { width: 28px; height: 28px; }
+    }
+
+    /* radar sweep (purpose-driven design) */
+    .icon-radar-sweep {
+        transform-origin: 24px 24px;
+        animation: radarSpin 4s linear infinite;
+    }
+    @keyframes radarSpin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* growth bars (scalable architecture) */
+    .icon-bar {
+        transform-box: fill-box;
+        transform-origin: bottom;
+        transform: scaleY(0);
+    }
+    .reveal.is-visible .icon-bar {
+        animation: growBar 0.6s ease forwards;
+    }
+    .reveal.is-visible .icon-bar.b1 { animation-delay: 0.15s; }
+    .reveal.is-visible .icon-bar.b2 { animation-delay: 0.3s; }
+    .reveal.is-visible .icon-bar.b3 { animation-delay: 0.45s; }
+    @keyframes growBar {
+        to { transform: scaleY(1); }
+    }
+
+    /* orbiting rings (direct collaboration) */
+    .icon-orbit-a { animation: floatA 3s ease-in-out infinite; transform-box: fill-box; }
+    .icon-orbit-b { animation: floatB 3s ease-in-out infinite; transform-box: fill-box; }
+    @keyframes floatA {
+        0%, 100% { transform: translateX(-2px); }
+        50% { transform: translateX(2px); }
+    }
+    @keyframes floatB {
+        0%, 100% { transform: translateX(2px); }
+        50% { transform: translateX(-2px); }
+    }
+
+    /* spinning sun rays (project thumbnail fallback) */
+    .icon-sun-rays {
+        transform-origin: center;
+        animation: spinSlow 14s linear infinite;
+    }
+    @keyframes spinSlow {
+        to { transform: rotate(360deg); }
+    }
+    .project-thumb-icon {
+        width: 38px;
+        height: 38px;
+        color: #a9773f;
+    }
+    @media (min-width: 768px) {
+        .project-thumb-icon { width: 46px; height: 46px; }
+    }
+
+    /* arrow nudge on "see all work" */
+    .arrow-nudge {
+        display: inline-block;
+        transition: transform 0.25s ease;
+    }
+    a:hover .arrow-nudge {
+        transform: translateX(4px);
+    }
+
+    /* ============ HERO ROBOT ILLUSTRATION ============ */
+    .robot-illustration {
+        width: 100%;
+        max-width: 220px;
+        margin: 0 auto;
+    }
+    @media (min-width: 640px) {
+        .robot-illustration { max-width: 280px; }
+    }
+    @media (min-width: 1024px) {
+        .robot-illustration { max-width: 340px; }
+    }
+    .robot-bob {
+        animation: robotBob 3.2s ease-in-out infinite;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+    @keyframes robotBob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    .eye-blink {
+        animation: eyeBlink 4.2s ease-in-out infinite;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+    @keyframes eyeBlink {
+        0%, 92%, 100% { transform: scaleY(1); }
+        95% { transform: scaleY(0.15); }
+    }
+    .antenna-pulse {
+        animation: antennaPulse 1.8s ease-in-out infinite;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+    @keyframes antennaPulse {
+        0%, 100% { opacity: 1; filter: drop-shadow(0 0 0 rgba(224, 164, 92, 0)); }
+        50% { opacity: 0.65; filter: drop-shadow(0 0 6px rgba(224, 164, 92, 0.85)); }
+    }
+    .cursor-blink {
+        animation: cursorBlink 1s steps(1) infinite;
+    }
+    @keyframes cursorBlink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+    .mini-gear-spin, .held-gear-spin {
+        animation: gearSpin 5s linear infinite;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+    @keyframes gearSpin {
+        to { transform: rotate(360deg); }
+    }
+    .float-icon-a, .float-icon-b, .float-icon-c {
+        transform-box: fill-box;
+    }
+    .float-icon-a { animation: floatSlow 5s ease-in-out infinite; }
+    .float-icon-b { animation: floatSlow 6s ease-in-out infinite; animation-delay: -2s; }
+    .float-icon-c { animation: floatSlow 4.5s ease-in-out infinite; animation-delay: -1s; }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    .browser-bar {
+        animation: barPulse 2.4s ease-in-out infinite;
+        transform-box: fill-box;
+        transform-origin: left;
+    }
+    .browser-bar.bar2 { animation-delay: 0.3s; }
+    .browser-bar.bar3 { animation-delay: 0.6s; }
+    @keyframes barPulse {
+        0%, 100% { opacity: 0.6; transform: scaleX(1); }
+        50% { opacity: 1; transform: scaleX(1.15); }
+    }
+    .robot-shadow {
+        animation: shadowPulse 3.2s ease-in-out infinite;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+    @keyframes shadowPulse {
+        0%, 100% { transform: scale(1); opacity: 0.12; }
+        50% { transform: scale(0.85); opacity: 0.08; }
+    }
+
+    @media (hover: none) {
+        .brown-card:hover,
+        .brown-card:hover .icon-badge,
+        .project-card:hover img,
+        .project-card:hover .thumb-fallback,
+        .cta-btn:hover,
+        a:hover .arrow-nudge {
+            transform: none;
+            box-shadow: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .hero-blob span, .squiggle-underline path, .reveal, .brown-card, .project-card img, .cta-btn,
+        .icon-radar-sweep, .icon-bar, .icon-orbit-a, .icon-orbit-b, .icon-sun-rays, .arrow-nudge,
+        .robot-bob, .eye-blink, .antenna-pulse, .cursor-blink, .mini-gear-spin, .held-gear-spin,
+        .float-icon-a, .float-icon-b, .float-icon-c, .browser-bar, .robot-shadow {
+            animation: none !important;
+            transition: none !important;
+        }
+        .reveal { opacity: 1; transform: none; }
+        .reveal .icon-bar { transform: scaleY(1); }
+    }
+</style>
+
+<div class="studio-wrap">
+
+<!-- Dynamic Hero Section -->
+<div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#f4ecdd] mb-14 sm:mb-20 md:mb-24">
+    <div class="hero-blob"><span class="b1"></span><span class="b2"></span></div>
+    <div class="grain-overlay"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto pt-10 sm:pt-16 md:pt-24 pb-10 sm:pb-16 md:pb-20 px-4 sm:px-6">
+        <div class="flex flex-col-reverse lg:flex-row items-center gap-8 sm:gap-10 lg:gap-6">
+
+            <!-- Text column -->
+            <div class="flex-1 text-center lg:text-left min-w-0">
+                <!-- If default text is used, provide translation tags, otherwise let the DB content render -->
+                <span class="bg-[#e4d5b7] px-3.5 sm:px-4 py-1.5 rounded-full text-[0.65rem] sm:text-xs font-semibold text-[#5c4030] tracking-widest uppercase inline-block"
+                      {% if not hero.tagline %}data-i18n data-en="Digital Product Studio" data-sv="Digital produktstudio"{% endif %}>
+                    {{ hero.tagline|default:"Digital Product Studio" }}
+                </span>
+
+          <h1
+    class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-tight mt-6 sm:mt-8 mb-4 sm:mb-6 text-[#3b2a1e] leading-tight md:leading-tight break-words"
+    data-i18n
+    data-en="We design ANDROID and WEB applications that"
+    data-sv="Vi designar ANDROID- och WEBB-applikationer som">
+    {{ hero.main_headline|default:"We design ANDROID and WEB applications that" }}
+
+    <span
+        class="squiggle-underline italic text-[#8a4b23]"
+        data-i18n
+        data-en="matter."
+        data-sv="spelar roll.">
+        {{ hero.highlighted_word|default:"matter." }}
+
+        <svg viewBox="0 0 200 14" preserveAspectRatio="none">
+            <path d="M2 10 Q 50 -2, 100 8 T 198 6"
+                  fill="none"
+                  stroke="#b1703c"
+                  stroke-width="3"
+                  stroke-linecap="round"/>
+        </svg>
+    </span>
+</h1>
+
+                <p class="text-[#6d5a47] text-base sm:text-lg md:text-xl mb-8 sm:mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+                   {% if not hero.description %}data-i18n data-en="We partner with forward-thinking teams to craft exceptional web and mobile experiences. No templates, just tailored solutions driven by curiosity." data-sv="Vi samarbetar med framåtblickande team för att skapa exceptionella webb- och mobila upplevelser. Inga mallar, bara skräddarsydda lösningar drivna av nyfikenhet."{% endif %}>
+                    {{ hero.description|default:"We partner with forward-thinking teams to craft exceptional web and mobile experiences. No templates, just tailored solutions driven by curiosity." }}
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 sm:gap-4">
+                    <a href="{% url 'contact' %}" class="cta-btn bg-[#5c4030] text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg text-sm font-medium hover:bg-[#46301f] shadow-sm text-center"
+                       {% if not hero.primary_button %}data-i18n data-en="Start a project" data-sv="Starta ett projekt"{% endif %}>
+                        {{ hero.primary_button|default:"Start a project" }}
+                    </a>
+                    <a href="{% url 'work' %}" class="cta-btn bg-transparent border border-[#c9b998] text-[#3b2a1e] px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg text-sm font-medium hover:bg-[#e4d5b7] text-center"
+                       {% if not hero.secondary_button %}data-i18n data-en="View our work" data-sv="Se vårt arbete"{% endif %}>
+                        {{ hero.secondary_button|default:"View our work" }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Animated dev-robot illustration column -->
+            <div class="flex-1 flex justify-center lg:justify-end w-full">
+                <svg class="robot-illustration" viewBox="0 0 320 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of a friendly robot building websites and apps">
+                    <defs>
+                        <linearGradient id="robotBodyGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#c99a5f"/>
+                            <stop offset="100%" stop-color="#a9773f"/>
+                        </linearGradient>
+                        <linearGradient id="robotHeadGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#d8c19a"/>
+                            <stop offset="100%" stop-color="#c99a5f"/>
+                        </linearGradient>
+                        <symbol id="gearIcon" viewBox="0 0 40 40">
+                            <g fill="#8a4b23">
+                                <circle cx="20" cy="20" r="10"/>
+                                <rect x="17" y="2" width="6" height="8" rx="2"/>
+                                <rect x="17" y="30" width="6" height="8" rx="2"/>
+                                <rect x="2" y="17" width="8" height="6" rx="2"/>
+                                <rect x="30" y="17" width="8" height="6" rx="2"/>
+                                <rect x="6" y="6" width="7" height="7" rx="2" transform="rotate(45 9.5 9.5)"/>
+                                <rect x="27" y="6" width="7" height="7" rx="2" transform="rotate(45 30.5 9.5)"/>
+                                <rect x="6" y="27" width="7" height="7" rx="2" transform="rotate(45 9.5 30.5)"/>
+                                <rect x="27" y="27" width="7" height="7" rx="2" transform="rotate(45 30.5 30.5)"/>
+                            </g>
+                            <circle cx="20" cy="20" r="5" fill="#3b2a1e"/>
+                        </symbol>
+                    </defs>
+
+                    <!-- ground shadow -->
+                    <ellipse cx="160" cy="312" rx="90" ry="14" fill="#3b2a1e" class="robot-shadow"/>
+
+                    <!-- floating code brackets -->
+                    <g class="float-icon-a">
+                        <text x="18" y="66" font-family="monospace" font-size="30" fill="#a9773f" font-weight="700">&lt;/&gt;</text>
+                    </g>
+
+                    <!-- floating browser window -->
+                    <g class="float-icon-b">
+                        <rect x="228" y="38" width="66" height="48" rx="7" fill="#faf3e6" stroke="#c99a5f" stroke-width="2"/>
+                        <rect x="228" y="38" width="66" height="13" rx="7" fill="#c99a5f"/>
+                        <circle cx="236" cy="44.5" r="2" fill="#faf3e6"/>
+                        <circle cx="243" cy="44.5" r="2" fill="#faf3e6"/>
+                        <circle cx="250" cy="44.5" r="2" fill="#faf3e6"/>
+                        <rect x="235" y="58" width="32" height="4" rx="2" fill="#d8c19a" class="browser-bar bar1"/>
+                        <rect x="235" y="67" width="22" height="4" rx="2" fill="#d8c19a" class="browser-bar bar2"/>
+                        <rect x="235" y="76" width="26" height="4" rx="2" fill="#d8c19a" class="browser-bar bar3"/>
+                    </g>
+
+                    <!-- floating mini gear -->
+                    <g class="float-icon-c">
+                        <use href="#gearIcon" x="14" y="220" width="36" height="36" class="mini-gear-spin"/>
+                    </g>
+
+                    <!-- robot -->
+                    <g class="robot-bob">
+                        <!-- legs -->
+                        <rect x="128" y="248" width="18" height="42" rx="8" fill="#5c4030"/>
+                        <rect x="174" y="248" width="18" height="42" rx="8" fill="#5c4030"/>
+                        <!-- feet -->
+                        <rect x="119" y="286" width="34" height="14" rx="7" fill="#3b2a1e"/>
+                        <rect x="167" y="286" width="34" height="14" rx="7" fill="#3b2a1e"/>
+
+                        <!-- body -->
+                        <rect x="100" y="150" width="120" height="108" rx="24" fill="url(#robotBodyGrad)" stroke="#5c4030" stroke-width="3"/>
+
+                        <!-- chest screen -->
+                        <rect x="122" y="174" width="76" height="44" rx="8" fill="#3b2a1e"/>
+                        <text x="130" y="202" font-family="monospace" font-size="15" fill="#c99a5f">build()</text>
+                        <rect x="179" y="190" width="7" height="14" fill="#c99a5f" class="cursor-blink"/>
+
+                        <!-- arms -->
+                        <rect x="76" y="164" width="20" height="58" rx="10" fill="#8a4b23"/>
+                        <rect x="224" y="164" width="20" height="58" rx="10" fill="#8a4b23"/>
+
+                        <!-- gear held in right hand -->
+                        <use href="#gearIcon" x="222" y="200" width="34" height="34" class="held-gear-spin"/>
+
+                        <!-- head -->
+                        <rect x="112" y="70" width="96" height="80" rx="20" fill="url(#robotHeadGrad)" stroke="#5c4030" stroke-width="3"/>
+
+                        <!-- antenna -->
+                        <line x1="160" y1="70" x2="160" y2="46" stroke="#5c4030" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="160" cy="40" r="8" fill="#e0a45c" class="antenna-pulse"/>
+
+                        <!-- face screen -->
+                        <rect x="128" y="90" width="64" height="42" rx="10" fill="#3b2a1e"/>
+                        <rect x="140" y="104" width="12" height="14" rx="3" fill="#f4d99b" class="eye-blink"/>
+                        <rect x="168" y="104" width="12" height="14" rx="3" fill="#f4d99b" class="eye-blink"/>
+                    </g>
+                </svg>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic Value Proposition Section -->
+<div class="border-t border-[#e1d3b3] pt-12 sm:pt-16 md:pt-24 mb-14 sm:mb-20 md:mb-24 px-4 sm:px-6">
+    <div class="text-center mb-10 sm:mb-12 reveal">
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#3b2a1e]" data-i18n data-en="Why work with us?" data-sv="Varför arbeta med oss?">Why work with us?</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8 max-w-5xl mx-auto">
+        {% if propositions %}
+            {% for prop in propositions %}
+            <div class="brown-card reveal bg-[#faf3e6] p-6 sm:p-8 rounded-2xl border border-[#e1d3b3] min-w-0">
+                <div class="icon-badge"><span class="text-xl sm:text-2xl">{{ prop.icon }}</span></div>
+                <h3 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3 text-[#3b2a1e] break-words">{{ prop.title }}</h3>
+                <p class="text-[#6d5a47] text-sm leading-relaxed">{{ prop.description }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Static Fallback if no Value Propositions exist in the database -->
+            <div class="brown-card reveal bg-[#faf3e6] p-6 sm:p-8 rounded-2xl border border-[#e1d3b3]">
+                <div class="icon-badge">
+                    <svg class="icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="17" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+                        <circle cx="24" cy="24" r="11" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                        <circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="2"/>
+                        <g class="icon-radar-sweep">
+                            <line x1="24" y1="24" x2="24" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </g>
+                        <circle cx="24" cy="24" r="2" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3 text-[#3b2a1e]" data-i18n data-en="Purpose-driven design" data-sv="Syftesdriven design">Purpose-driven design</h3>
+                <p class="text-[#6d5a47] text-sm leading-relaxed" data-i18n data-en="We don't just make things look pretty. We design intuitive interfaces grounded in actual user research and your business goals." data-sv="Vi gör inte bara saker vackra. Vi designar intuitiva gränssnitt baserade på faktisk användarforskning och dina affärsmål.">
+                    We don't just make things look pretty. We design intuitive interfaces grounded in actual user research and your business goals.
+                </p>
+            </div>
+            <div class="brown-card reveal bg-[#faf3e6] p-6 sm:p-8 rounded-2xl border border-[#e1d3b3]" style="transition-delay: 120ms;">
+                <div class="icon-badge">
+                    <svg class="icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect class="icon-bar b1" x="8" y="24" width="8" height="16" rx="2" fill="currentColor"/>
+                        <rect class="icon-bar b2" x="20" y="16" width="8" height="24" rx="2" fill="currentColor" opacity="0.75"/>
+                        <rect class="icon-bar b3" x="32" y="8" width="8" height="32" rx="2" fill="currentColor" opacity="0.55"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3 text-[#3b2a1e]" data-i18n data-en="Scalable architecture" data-sv="Skalbar arkitektur">Scalable architecture</h3>
+                <p class="text-[#6d5a47] text-sm leading-relaxed" data-i18n data-en="Built on modern, secure frameworks like Django and React. Your product is engineered to grow securely as your user base expands." data-sv="Byggd på moderna, säkra ramverk som Django och React. Din produkt är konstruerad för att växa säkert när din användarbas expanderar.">
+                    Built on modern, secure frameworks like Django and React. Your product is engineered to grow securely as your user base expands.
+                </p>
+            </div>
+            <div class="brown-card reveal bg-[#faf3e6] p-6 sm:p-8 rounded-2xl border border-[#e1d3b3]" style="transition-delay: 240ms;">
+                <div class="icon-badge">
+                    <svg class="icon-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="icon-orbit-a" cx="18" cy="24" r="12" stroke="currentColor" stroke-width="2" opacity="0.85"/>
+                        <circle class="icon-orbit-b" cx="30" cy="24" r="12" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg sm:text-xl font-bold mb-2.5 sm:mb-3 text-[#3b2a1e]" data-i18n data-en="Direct collaboration" data-sv="Direkt samarbete">Direct collaboration</h3>
+                <p class="text-[#6d5a47] text-sm leading-relaxed" data-i18n data-en="No account managers or ticket queues. You work directly with the designers and engineers building your product from day one." data-sv="Inga kundansvariga eller ärendeköer. Du arbetar direkt med designerna och utvecklarna som bygger din produkt från dag ett.">
+                    No account managers or ticket queues. You work directly with the designers and engineers building your product from day one.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Featured Work Preview (From Backend) -->
+<div class="bg-[#f2ece1] -mx-4 sm:-mx-6 md:-mx-8 px-4 sm:px-6 md:px-8 py-16 md:py-24 rounded-3xl md:rounded-[3rem] mb-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header & Link -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-14 gap-6 reveal">
+            <div class="max-w-2xl min-w-0">
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#3d362d] mb-3 md:mb-4 break-words leading-tight">
+                    {% if hero.featured_title %}
+                        {{ hero.featured_title }}
+                    {% else %}
+                        <span data-i18n data-en="Featured projects" data-sv="Utvalda projekt">Featured projects</span>
+                    {% endif %}
+                </h2>
+                <p class="text-[#7a7268] text-sm sm:text-base md:text-lg leading-relaxed">
+                    {% if hero.featured_subtitle %}
+                        {{ hero.featured_subtitle }}
+                    {% else %}
+                        <span data-i18n data-en="A glimpse into what we've been building." data-sv="En glimt av vad vi har byggt.">A glimpse into what we've been building.</span>
+                    {% endif %}
+                </p>
+            </div>
+            <a href="{% url 'work' %}" class="text-[#596235] font-medium hover:text-[#3d362d] hover:underline flex items-center gap-1.5 shrink-0 text-sm sm:text-base md:text-lg transition-colors mt-2 md:mt-0">
+                <span data-i18n data-en="See all work" data-sv="Se alla projekt">See all work</span> <span class="arrow-nudge">→</span>
+            </a>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {% if featured_projects %}
+                <!-- Dynamic Loop Exclusively from your Django Database -->
+                {% for project in featured_projects %}
+                <a href="{% url 'work' %}" class="project-card reveal group block border border-[#e3dfd6] rounded-3xl overflow-hidden bg-[#fcfaf5] transition-all duration-300 hover:shadow-xl hover:border-[#596235] hover:-translate-y-1">
+                    <div class="h-56 md:h-72 bg-[#e8e2d4] flex items-center justify-center text-[#596235] overflow-hidden">
+                        {% if project.image %}
+                            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        {% else %}
+                            <span class="thumb-fallback transition-transform duration-700 group-hover:scale-110">
+                                <svg class="w-12 h-12 opacity-50" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="18" r="6" fill="currentColor"/>
+                                    <path d="M6 40 L18 26 L26 34 L32 24 L42 40 Z" fill="currentColor"/>
+                                </svg>
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-lg md:text-xl font-bold text-[#3d362d] group-hover:text-[#596235] transition-colors break-words">{{ project.title }}</h3>
+                        <p class="text-xs md:text-sm font-medium text-[#7a7268] mt-2 uppercase tracking-widest">{{ project.category }} · {{ project.year }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <!-- Dynamic Empty State (Only shows if NOTHING is featured in the admin panel) -->
+                <div class="col-span-1 md:col-span-2 text-center py-16 sm:py-20 px-4 rounded-3xl reveal border border-dashed border-[#d1ccc3] bg-[#fcfaf5]">
+                    <p class="text-lg sm:text-xl font-serif font-bold text-[#3d362d] mb-2" data-i18n data-en="No featured projects yet." data-sv="Inga utvalda projekt ännu.">
+                        No featured projects yet.
+                    </p>
+                    <p class="text-sm text-[#7a7268]" data-i18n data-en="Log into the admin panel and check 'Is featured' on a project." data-sv="Logga in i adminpanelen och markera 'Är utvald' på ett projekt.">
+                        Log into the admin panel and check 'Is featured' on a project.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var els = document.querySelectorAll('.reveal');
+
+        if (prefersReduced || !('IntersectionObserver' in window)) {
+            els.forEach(function (el) { el.classList.add('is-visible'); });
+        } else {
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            els.forEach(function (el) { observer.observe(el); });
+        }
+
+        // Translation logic hook for this page
+        if (window.setLanguage && document.documentElement.lang === 'sv') {
+            window.setLanguage('sv');
+        }
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,289 @@
+{% extends 'agency/base.html' %}
+{% block content %}
+<style>
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* ---------- Hero: premium animated neural network ---------- */
+    #ai-hero { display:block; margin: 0 auto 1.5rem; }
+    .hero-node { animation: heroPulse 2.8s ease-in-out infinite; }
+    @keyframes heroPulse { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
+    .hero-synapse { stroke-dasharray: 5 8; animation: synapseFlow 3.6s linear infinite; opacity:0.5; }
+    @keyframes synapseFlow { to { stroke-dashoffset: -130; } }
+    .hero-ring { animation: ringSpin 16s linear infinite; transform-origin: 165px 55px; }
+    @keyframes ringSpin { to { transform: rotate(360deg); } }
+
+    .typing-hand { animation: handType 0.7s ease-in-out infinite alternate; }
+    @keyframes handType { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+    .screen-glow { animation: glowPulse 3.2s ease-in-out infinite; }
+    @keyframes glowPulse { 0%,100% { opacity:.22; } 50% { opacity:.5; } }
+    .steam { animation: steamRise 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom center; }
+    @keyframes steamRise {
+        0%   { transform: translateY(0) scaleY(1); opacity: 0; }
+        20%  { opacity: .7; }
+        70%  { opacity: .5; }
+        100% { transform: translateY(-14px) scaleY(1.2); opacity: 0; }
+    }
+
+    .service-card { transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease; position: relative; overflow: hidden; }
+    .service-card:hover { transform: translateY(-4px); border-color: var(--caramel); box-shadow: 0 18px 38px -18px rgba(74,51,36,0.4); }
+    .service-card::after {
+        content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s ease;
+        background: radial-gradient(circle at 85% 15%, rgba(217,163,97,0.16), transparent 55%);
+    }
+    .service-card:hover::after { opacity: 1; }
+    .icon-badge { transition: transform 0.4s ease; }
+    .service-card:hover .icon-badge { transform: scale(1.08) rotate(-3deg); }
+    .icon-node { animation: heroPulse 2.4s ease-in-out infinite; }
+    .icon-orbit { animation: ringSpin 9s linear infinite; transform-origin: 22px 22px; }
+    .icon-bracket-l { animation: bracketBreatheL 2.6s ease-in-out infinite; transform-origin: 22px 22px; }
+    .icon-bracket-r { animation: bracketBreatheR 2.6s ease-in-out infinite; transform-origin: 22px 22px; }
+    @keyframes bracketBreatheL { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-1.5px); } }
+    @keyframes bracketBreatheR { 0%,100% { transform: translateX(0); } 50% { transform: translateX(1.5px); } }
+    .icon-scanline { animation: scanMove 2.8s ease-in-out infinite; }
+    @keyframes scanMove { 0%,100% { transform: translateY(0); opacity:0.9; } 50% { transform: translateY(16px); opacity:0.35; } }
+
+    /* ---------- Process: animated data-flow pipeline (desktop/tablet 4-across only) ---------- */
+    .process-track { position: relative; }
+    .process-track::before {
+        content: '';
+        position: absolute; top: 20px; left: 12.5%; right: 12.5%; height: 1.5px;
+        background: repeating-linear-gradient(90deg, var(--beige) 0 8px, transparent 8px 14px);
+        display: none;
+    }
+    .process-line-fill {
+        position: absolute; top: 20px; left: 12.5%; height: 1.5px; width: 0%;
+        background: linear-gradient(90deg, var(--copper), var(--caramel));
+        transition: width 1.4s ease;
+        display: none;
+    }
+    .process-track.is-visible .process-line-fill { width: 75%; }
+    .pulse-runner {
+        position: absolute; top: 17px; left: 12.5%; width: 7px; height: 7px; border-radius: 50%;
+        background: var(--copper); box-shadow: 0 0 8px 2px rgba(185,121,63,0.6);
+        opacity: 0; animation: runFlow 3.2s ease-in-out infinite; animation-play-state: paused;
+        display: none;
+    }
+    .process-track.is-visible .pulse-runner { animation-play-state: running; }
+    @keyframes runFlow { 0% { left:12.5%; opacity:0; } 8% { opacity:1; } 92% { opacity:1; } 100% { left:87.5%; opacity:0; } }
+    .step-dot { transition: transform 0.35s ease, box-shadow 0.35s ease; position: relative; z-index: 1; }
+    .step:hover .step-dot { transform: scale(1.1); box-shadow: 0 0 0 5px var(--beige); }
+
+    /* Only show the connecting flow-line once the track is actually laid out 4-across (md+) */
+    @media (min-width: 768px) {
+        .process-track::before,
+        .process-line-fill,
+        .pulse-runner { display: block; }
+    }
+
+    @media (hover: none) {
+        .service-card:hover,
+        .service-card:hover::after,
+        .service-card:hover .icon-badge,
+        .step:hover .step-dot { transform: none; box-shadow: none; opacity: 0; border-color: var(--beige); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal { opacity: 1 !important; transform: none !important; }
+        .hero-node, .hero-synapse, .hero-ring, .icon-node, .pulse-runner,
+        .icon-orbit, .icon-bracket-l, .icon-bracket-r, .icon-scanline,
+        .typing-hand, .screen-glow, .steam { animation: none !important; }
+        .process-line-fill { transition: none !important; width: 75% !important; }
+    }
+</style>
+
+<!-- Premium animated illustration: a person working, with an AI cluster hovering over the screen -->
+<svg id="ai-hero" width="300" height="200" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" class="w-[220px] h-auto sm:w-[260px] md:w-[300px]">
+    <defs>
+        <linearGradient id="giltHero" x1="0" y1="0" x2="320" y2="200" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#d9a361"/>
+            <stop offset="1" stop-color="#96683f"/>
+        </linearGradient>
+        <linearGradient id="skinGrad" x1="70" y1="70" x2="120" y2="180" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#c68a5e"/>
+            <stop offset="1" stop-color="#a06a41"/>
+        </linearGradient>
+        <linearGradient id="hairGrad" x1="70" y1="60" x2="115" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#4a3324"/>
+            <stop offset="1" stop-color="#2c2018"/>
+        </linearGradient>
+        <linearGradient id="shirtGrad" x1="60" y1="120" x2="120" y2="180" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#b9793f"/>
+            <stop offset="1" stop-color="#8a5a34"/>
+        </linearGradient>
+        <linearGradient id="deskGrad" x1="20" y1="172" x2="300" y2="182" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#e9dfc9"/>
+            <stop offset="1" stop-color="#d9caa4"/>
+        </linearGradient>
+        <linearGradient id="screenGrad" x1="118" y1="86" x2="212" y2="148" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#faf5ea"/>
+            <stop offset="1" stop-color="#efe6d3"/>
+        </linearGradient>
+        <radialGradient id="shadowGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#2c2018" stop-opacity="0.28"/>
+            <stop offset="1" stop-color="#2c2018" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <!-- ambient shadow -->
+    <ellipse cx="150" cy="188" rx="130" ry="10" fill="url(#shadowGrad)"/>
+
+    <!-- desk (with a hint of thickness/edge for depth) -->
+    <rect x="18" y="172" width="284" height="6" rx="1.5" fill="url(#deskGrad)"/>
+    <rect x="18" y="176" width="284" height="3" fill="#c9b88c" opacity="0.6"/>
+
+    <!-- chair back, behind the person -->
+    <path d="M52 178 C50 140 56 108 78 96 C74 118 74 150 74 178 Z" fill="#8a5a34" opacity="0.55"/>
+
+    <!-- laptop screen -->
+    <rect x="118" y="84" width="94" height="64" rx="6" fill="#2c2018"/>
+    <rect x="121" y="87" width="88" height="55" rx="3" fill="url(#screenGrad)"/>
+    <!-- faint UI lines suggesting an active app -->
+    <rect x="127" y="94" width="40" height="4" rx="2" fill="var(--beige)" opacity="0.8"/>
+    <rect x="127" y="103" width="60" height="3" rx="1.5" fill="var(--beige)" opacity="0.6"/>
+    <rect x="127" y="110" width="52" height="3" rx="1.5" fill="var(--beige)" opacity="0.6"/>
+    <rect x="127" y="122" width="34" height="14" rx="3" fill="var(--caramel)" opacity="0.35"/>
+    <rect class="screen-glow" x="118" y="84" width="94" height="64" rx="6" fill="url(#giltHero)"/>
+    <!-- screen reflection -->
+    <path d="M126 90 L140 90 L124 138 L118 138 Z" fill="#fff" opacity="0.06"/>
+
+    <!-- laptop base / keyboard -->
+    <path d="M106 148 L224 148 L216 168 L114 168 Z" fill="#e9dfc9" stroke="#a8926a" stroke-width="1"/>
+    <path d="M112 152 L218 152 L213 162 L117 162 Z" fill="#dccfa8" opacity="0.6"/>
+
+    <!-- coffee cup -->
+    <g>
+        <ellipse cx="248" cy="164" rx="14" ry="3" fill="url(#shadowGrad)" opacity="0.5"/>
+        <path d="M238 150 h20 v14 a10 8 0 0 1 -20 0 Z" fill="#fdfaf3" stroke="#a8926a" stroke-width="1.4"/>
+        <path d="M240 152 h16 v3 h-16 Z" fill="#6b4a30" opacity="0.85"/>
+        <path d="M258 154 q8 0 8 6 q0 6 -8 6" fill="none" stroke="#a8926a" stroke-width="1.4"/>
+        <path class="steam" d="M243 146 q-3 -6 0 -12" fill="none" stroke="var(--caramel)" stroke-width="1.4" stroke-linecap="round" style="animation-delay:0s"/>
+        <path class="steam" d="M251 146 q3 -6 0 -12" fill="none" stroke="var(--caramel)" stroke-width="1.4" stroke-linecap="round" style="animation-delay:1.1s"/>
+    </g>
+
+    <!-- person: shaded torso, hair, ear, and a hand with fingers on the keys -->
+    <path d="M60 188 C60 148 68 118 90 118 C112 118 120 148 120 188 Z" fill="url(#shirtGrad)"/>
+    <path d="M78 130 C82 126 98 126 102 130 L100 150 L80 150 Z" fill="#8a5a34" opacity="0.5"/>
+    <circle cx="90" cy="92" r="15" fill="url(#skinGrad)"/>
+    <path d="M76 90 a3 4 0 0 0 3 5" fill="none" stroke="#8a5a34" stroke-width="1.2" opacity="0.6"/>
+    <path d="M76 86 C76 74 84 66 92 66 C102 66 106 76 105 86 C99 80 92 78 86 80 C82 82 78 84 76 86 Z" fill="url(#hairGrad)"/>
+    <path d="M105 108 C118 114 130 130 137 148" fill="none" stroke="url(#skinGrad)" stroke-width="8" stroke-linecap="round"/>
+    <g class="typing-hand">
+        <ellipse cx="138" cy="150" rx="6" ry="4.5" fill="url(#skinGrad)"/>
+        <path d="M134 147 l-1 -3 M138 146 l0 -3.4 M142 147 l1 -3" stroke="url(#skinGrad)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- floating AI cluster above the screen -->
+    <g class="hero-ring">
+        <ellipse cx="165" cy="52" rx="26" ry="10" fill="none" stroke="var(--beige)" stroke-width="1.2"/>
+    </g>
+    <g fill="none" stroke="url(#giltHero)" stroke-width="1.3">
+        <path class="hero-synapse" d="M140 28 L165 52" style="animation-delay:0s"/>
+        <path class="hero-synapse" d="M190 28 L165 52" style="animation-delay:.5s"/>
+        <path class="hero-synapse" d="M165 52 L165 84" style="animation-delay:1s"/>
+    </g>
+    <circle class="hero-node" cx="140" cy="28" r="3.2" fill="var(--caramel)"/>
+    <circle class="hero-node" cx="190" cy="28" r="3.2" fill="var(--copper)" style="animation-delay:.4s"/>
+    <circle class="hero-node" cx="165" cy="52" r="6" fill="url(#giltHero)" style="animation-delay:.2s"/>
+</svg>
+
+<div class="text-center max-w-3xl mx-auto mb-10 sm:mb-12 md:mb-16 px-4 reveal">
+    <span class="px-3 py-1 rounded-full text-[0.65rem] sm:text-xs font-medium font-mono uppercase tracking-[0.18em]"
+          style="background:var(--beige); color:var(--coffee);"
+          data-i18n data-en="What we offer" data-sv="Vad vi erbjuder">What we offer</span>
+    <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight mt-5 sm:mt-6 mb-3 sm:mb-4 break-words" style="color:var(--espresso);"
+        data-i18n data-en="Services built around your product, not our template"
+        data-sv="Tjänster byggda kring din produkt, inte vår mall">
+        Services built around your product, not our template
+    </h1>
+</div>
+
+<!-- Services Grid -->
+<div class="grid sm:grid-cols-2 gap-5 sm:gap-6 max-w-5xl mx-auto px-4">
+    <div class="service-card reveal border p-6 sm:p-8 rounded-2xl" style="border-color:var(--beige); background:var(--cream); transition-delay:0ms;">
+        <svg class="icon-badge w-10 h-10 sm:w-11 sm:h-11" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="22" cy="22" r="19" fill="var(--beige)"/>
+            <g class="icon-orbit">
+                <circle cx="22" cy="22" r="15.5" fill="none" stroke="var(--copper)" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
+            </g>
+            <path class="icon-bracket-l" d="M13 16 L9 22 L13 28" stroke="var(--espresso)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="icon-bracket-r" d="M31 16 L35 22 L31 28" stroke="var(--espresso)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle class="icon-node" cx="22" cy="22" r="3" fill="var(--caramel)"/>
+        </svg>
+        <h3 class="text-lg sm:text-xl font-bold mt-3 sm:mt-4 mb-2" style="color:var(--espresso);"
+            data-i18n data-en="Web development" data-sv="Webbutveckling">Web development</h3>
+        <p class="mb-4 text-sm sm:text-base" style="color:var(--coffee); opacity:0.85;"
+           data-i18n data-en="Marketing sites, web apps, and dashboards built with modern frameworks and clean code."
+           data-sv="Marknadsföringssajter, webbappar och dashboards byggda med moderna ramverk och ren kod.">
+            Marketing sites, web apps, and dashboards built with modern frameworks and clean code.
+        </p>
+        <span class="text-sm font-semibold font-mono" style="color:var(--caramel);">From 500kr</span>
+    </div>
+    <div class="service-card reveal border p-6 sm:p-8 rounded-2xl" style="border-color:var(--beige); background:var(--cream); transition-delay:120ms;">
+        <svg class="icon-badge w-10 h-10 sm:w-11 sm:h-11" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="22" cy="22" r="19" fill="var(--beige)"/>
+            <g class="icon-orbit">
+                <circle cx="22" cy="22" r="15.5" fill="none" stroke="var(--copper)" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>
+            </g>
+            <rect x="15" y="9" width="14" height="26" rx="3" fill="none" stroke="var(--espresso)" stroke-width="2"/>
+            <rect class="icon-scanline" x="16.5" y="11" width="11" height="1.6" rx="0.8" fill="var(--copper)"/>
+            <circle class="icon-node" cx="22" cy="29.5" r="1.6" fill="var(--caramel)"/>
+        </svg>
+        <h3 class="text-lg sm:text-xl font-bold mt-3 sm:mt-4 mb-2" style="color:var(--espresso);"
+            data-i18n data-en="App development" data-sv="Apputveckling">App development</h3>
+        <p class="mb-4 text-sm sm:text-base" style="color:var(--coffee); opacity:0.85;"
+           data-i18n data-en="Native iOS and Android, or cross-platform apps that feel native on both."
+           data-sv="Native iOS och Android, eller plattformsoberoende appar som känns native på båda.">
+            Native iOS and Android, or cross-platform apps that feel native on both.
+        </p>
+        <span class="text-sm font-semibold font-mono" style="color:var(--caramel);">From 600kr</span>
+    </div>
+</div>
+
+<!-- Process Section -->
+<div class="mt-16 sm:mt-20 md:mt-24 text-center reveal px-4">
+    <h2 class="font-serif text-2xl sm:text-3xl font-bold mb-8 sm:mb-10 md:mb-12" style="color:var(--espresso);"
+        data-i18n data-en="How we work" data-sv="Så här arbetar vi">How we work</h2>
+    <div class="process-track relative grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 sm:gap-8 max-w-4xl mx-auto">
+        <div class="process-line-fill"></div>
+        <div class="pulse-runner"></div>
+        <div class="step">
+            <div class="step-dot w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 font-semibold" style="background:var(--beige); color:var(--espresso);">1</div>
+            <h4 class="font-bold text-sm sm:text-base" style="color:var(--espresso);" data-i18n data-en="Discover" data-sv="Utforska">Discover</h4>
+        </div>
+        <div class="step">
+            <div class="step-dot w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 font-semibold" style="background:var(--beige); color:var(--espresso);">2</div>
+            <h4 class="font-bold text-sm sm:text-base" style="color:var(--espresso);" data-i18n data-en="Design" data-sv="Design">Design</h4>
+        </div>
+        <div class="step">
+            <div class="step-dot w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 font-semibold" style="background:var(--beige); color:var(--espresso);">3</div>
+            <h4 class="font-bold text-sm sm:text-base" style="color:var(--espresso);" data-i18n data-en="Build" data-sv="Bygg">Build</h4>
+        </div>
+        <div class="step">
+            <div class="step-dot w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 font-semibold" style="background:var(--beige); color:var(--espresso);">4</div>
+            <h4 class="font-bold text-sm sm:text-base" style="color:var(--espresso);" data-i18n data-en="Launch" data-sv="Lansera">Launch</h4>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const items = document.querySelectorAll('.reveal');
+        const track = document.querySelector('.process-track');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        items.forEach(el => observer.observe(el));
+        if (track) observer.observe(track);
+
+        if (window.setLanguage && document.documentElement.lang === 'sv') {
+            window.setLanguage('sv');
+        }
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curiosity Tech Matters | Premium Design Studio</title>
+
+    <!-- Fonts: Fraunces for editorial serif display, Work Sans for body, JetBrains Mono for the dev/code accents -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root{
+            --espresso:#2c2018;
+            --coffee:#4a3324;
+            --caramel:#96683f;
+            --copper:#b9793f;
+            --beige:#e9dfc9;
+            --cream:#faf5ea;
+        }
+        html { -webkit-text-size-adjust: 100%; }
+        body { font-family: 'Work Sans', sans-serif; background-color: var(--cream); color: var(--espresso); overflow-x: hidden; }
+        .font-serif { font-family: 'Fraunces', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .fade-in { animation: fadeIn 0.9s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nav-link { position: relative; color: var(--coffee); }
+        .nav-link::after {
+            content: ''; position: absolute; left: 0; bottom: -4px;
+            width: 0; height: 1px; background: var(--copper); transition: 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* ---------- Background: drifting dev glyphs ---------- */
+        #dev-bg {
+            position: fixed; inset: 0; overflow: hidden; z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 20% 10%, rgba(185,121,63,0.10), transparent 55%),
+                radial-gradient(ellipse at 85% 80%, rgba(74,51,36,0.10), transparent 55%);
+        }
+        #dev-bg .glyph {
+            position: absolute;
+            bottom: -10%;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--caramel);
+            opacity: 0;
+            animation-name: floatUp;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            user-select: none;
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+            8%   { opacity: 0.16; }
+            85%  { opacity: 0.12; }
+            100% { transform: translateY(-115vh) rotate(12deg); opacity: 0; }
+        }
+        #dev-bg svg.circuit { position:absolute; inset:0; width:100%; height:100%; opacity:0.06; }
+        #dev-bg .circuit path { stroke: var(--coffee); }
+        #dev-bg .circuit circle { fill: var(--copper); }
+        .pulse-dot { animation: pulseDot 3.2s ease-in-out infinite; }
+        @keyframes pulseDot { 0%,100%{opacity:.25;} 50%{opacity:1;} }
+
+        @media (prefers-reduced-motion: reduce) {
+            #dev-bg .glyph, .pulse-dot { animation: none !important; opacity: 0.08 !important; }
+        }
+
+        main, header, footer { position: relative; z-index: 1; }
+        #nav-menu.absolute { max-width: calc(100vw - 3rem); }
+    </style>
+</head>
+
+<body class="text-[color:var(--espresso)] antialiased flex flex-col min-h-screen selection:bg-[color:var(--beige)]">
+
+    <!-- Ambient background: floating code glyphs + faint circuit lines -->
+    <div id="dev-bg" aria-hidden="true">
+        <svg class="circuit" viewBox="0 0 1200 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="1.5">
+            <path d="M0 120 H220 V260 H460 V80 H760 V300 H1200" />
+            <path d="M0 620 H180 V480 H420 V680 H700 V520 H1200" />
+            <path d="M140 0 V180 H340 V420" />
+            <path d="M980 0 V160 H1100 V400 H860 V800" />
+            <circle cx="220" cy="120" r="4" class="pulse-dot"/>
+            <circle cx="460" cy="260" r="4" class="pulse-dot" style="animation-delay:.6s"/>
+            <circle cx="760" cy="80" r="4" class="pulse-dot" style="animation-delay:1.2s"/>
+            <circle cx="420" cy="680" r="4" class="pulse-dot" style="animation-delay:.3s"/>
+            <circle cx="1100" cy="160" r="4" class="pulse-dot" style="animation-delay:1.6s"/>
+        </svg>
+        <span class="glyph" style="left:6%;  font-size:22px; animation-duration:26s; animation-delay:-2s;">&lt;/&gt;</span>
+        <span class="glyph" style="left:16%; font-size:15px; animation-duration:19s; animation-delay:-9s;">{ }</span>
+        <span class="glyph" style="left:27%; font-size:18px; animation-duration:31s; animation-delay:-4s;">01</span>
+        <span class="glyph" style="left:38%; font-size:24px; animation-duration:23s; animation-delay:-14s;">&lt;/&gt;</span>
+        <span class="glyph" style="left:49%; font-size:14px; animation-duration:17s; animation-delay:-1s;">const</span>
+        <span class="glyph" style="left:59%; font-size:20px; animation-duration:29s; animation-delay:-11s;">{ }</span>
+        <span class="glyph" style="left:69%; font-size:16px; animation-duration:21s; animation-delay:-6s;">10</span>
+        <span class="glyph" style="left:79%; font-size:23px; animation-duration:27s; animation-delay:-16s;">&lt;/&gt;</span>
+        <span class="glyph" style="left:89%; font-size:15px; animation-duration:20s; animation-delay:-8s;">fn()</span>
+        <span class="glyph" style="left:94%; font-size:18px; animation-duration:24s; animation-delay:-3s;">{ }</span>
+    </div>
+
+    <!-- Header -->
+    <header class="py-5 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto w-full flex justify-between items-center z-50 relative gap-3 xl:gap-8">
+        
+        <!-- LEFT: Logo Zone (shrink-0 ensures it keeps its space) -->
+        <div class="flex shrink-0 justify-start">
+            <a href="/" class="flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity group">
+                <svg width="36" height="36" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="shrink-0 w-8 h-8 md:w-9 md:h-9 lg:w-[42px] lg:h-[42px] transition-transform duration-500 group-hover:rotate-[8deg]">
+                    <defs>
+                        <linearGradient id="gilt" x1="4" y1="4" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#d9a361"/>
+                            <stop offset="1" stop-color="#96683f"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="22" cy="22" r="19.5" stroke="url(#gilt)" stroke-width="1" fill="none" opacity="0.55"/>
+                    <path d="M29.5 12.5 C23 8, 13.5 11, 12.5 22 C13.5 33, 23 36, 29.5 31.5" stroke="#3a2a1c" stroke-width="2.1" fill="none" stroke-linecap="round"/>
+                    <path d="M29.5 12.5 L26.3 13.1 M29.5 12.5 L28.6 15.6" stroke="#3a2a1c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                    <path d="M29.5 31.5 L26.3 30.9 M29.5 31.5 L28.6 28.4" stroke="#3a2a1c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                    <path d="M28 20.6 L29.6 17 L31.2 20.6 L34.8 22.2 L31.2 23.8 L29.6 27.4 L28 23.8 L24.4 22.2 Z" fill="url(#gilt)"/>
+                </svg>
+                <span class="flex flex-col leading-tight">
+                    <span class="whitespace-nowrap text-[13px] md:text-base lg:text-lg xl:text-[1.3rem] font-serif font-semibold tracking-tight" style="color:var(--espresso)">Curiosity Tech Matters</span>
+                </span>
+            </a>
+        </div>
+
+        <!-- CENTER: Desktop Navigation (flex-1 prevents overflow) -->
+        <nav id="nav-menu" class="hidden md:flex flex-1 justify-center space-x-4 lg:space-x-8 xl:space-x-10 text-[10px] lg:text-xs xl:text-sm font-medium uppercase tracking-wider mx-2 lg:mx-4">
+            <a href="/" class="nav-link" data-i18n data-en="Home" data-sv="Hem">Home</a>
+            <a href="/services" class="nav-link" data-i18n data-en="Services" data-sv="Tjänster">Services</a>
+            <a href="/work" class="nav-link" data-i18n data-en="Work" data-sv="Arbete">Work</a>
+            <a href="/about" class="nav-link" data-i18n data-en="About" data-sv="Om oss">About</a>
+            
+            <!-- Mobile Only: Get a quote inside the menu -->
+            <a href="/contact" class="md:hidden mt-2 px-4 py-2.5 rounded-lg text-xs font-medium text-center w-full" style="background:var(--espresso); color:var(--cream);" data-i18n data-en="Get a quote" data-sv="Få en offert">
+                Get a quote
+            </a>
+
+            <!-- Mobile Only: Language Toggle inside menu -->
+            <button id="lang-toggle-mobile" type="button" aria-label="Change language" class="md:hidden flex items-center justify-center gap-1.5 text-sm font-medium normal-case tracking-normal px-3 py-2.5 rounded-lg border w-full mt-2" style="color:var(--coffee); border-color:var(--beige);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M3 12h18M12 3c2.4 2.4 3.6 5.6 3.6 9s-1.2 6.6-3.6 9c-2.4-2.4-3.6-5.6-3.6-9S9.6 5.4 12 3Z" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                <span class="lang-label-m font-mono">EN</span><span class="opacity-40">/</span><span class="lang-label-m-alt font-mono opacity-50">SV</span>
+            </button>
+        </nav>
+
+        <!-- RIGHT: Desktop Language & CTA -->
+        <div class="hidden md:flex shrink-0 justify-end items-center gap-3 lg:gap-4 xl:gap-5">
+            <button id="lang-toggle" type="button" aria-label="Change language" class="flex items-center gap-1 lg:gap-1.5 text-[10px] lg:text-xs xl:text-sm font-medium px-2 lg:px-3 py-1.5 lg:py-2 rounded-lg border transition-colors hover:bg-[color:var(--beige)]" style="color:var(--coffee); border-color:var(--beige);">
+                <svg width="15" height="15" class="lg:w-[17px] lg:h-[17px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M3 12h18M12 3c2.4 2.4 3.6 5.6 3.6 9s-1.2 6.6-3.6 9c-2.4-2.4-3.6-5.6-3.6-9S9.6 5.4 12 3Z" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                <span id="lang-label" class="font-mono tracking-wide">EN</span>
+                <span class="opacity-40">/</span>
+                <span id="lang-label-alt" class="font-mono tracking-wide opacity-50">SV</span>
+            </button>
+
+            <a href="/contact" class="px-3 lg:px-5 xl:px-6 py-2 xl:py-3 rounded-lg xl:rounded-xl text-[11px] lg:text-xs xl:text-sm font-medium transition-all hover:scale-[1.05] whitespace-nowrap" style="background:var(--espresso); color:var(--cream);" data-i18n data-en="Get a quote" data-sv="Få en offert">
+                Get a quote
+            </a>
+        </div>
+
+        <!-- RIGHT: Mobile Nav Controls -->
+        <div class="md:hidden flex shrink-0 justify-end items-center gap-2">
+            <a href="/contact" class="hidden min-[375px]:inline-flex px-3 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap" style="background:var(--espresso); color:var(--cream);" data-i18n data-en="Get a quote" data-sv="Få en offert">
+                Get a quote
+            </a>
+            <button id="menu-toggle" class="text-2xl leading-none px-1" style="color:var(--coffee)">☰</button>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-6 py-6 sm:py-8 md:py-10 w-full flex-grow fade-in">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t mt-auto py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-5 sm:gap-6 text-sm text-center md:text-left" style="border-color:var(--beige); color:var(--caramel)">
+        <div class="font-mono tracking-wide text-xs sm:text-sm break-words">© 2026 Curiosity Tech Matters</div>
+        <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 sm:gap-x-8">
+            <a href="mailto:curiositytechmatters@gmail.com" class="hover:opacity-70 transition font-mono text-xs sm:text-sm break-all" style="color:var(--coffee)">curiositytechmatters@gmail.com</a>
+            <a href="#" class="hover:opacity-70 transition" style="color:var(--coffee)">LinkedIn</a>
+            <a href="#" class="hover:opacity-70 transition" style="color:var(--coffee)">Instagram</a>
+        </div>
+    </footer>
+
+    <script>
+    // ---------------- Mobile Menu ----------------
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('hidden');
+            navMenu.classList.toggle('flex');
+            navMenu.classList.toggle('flex-col');
+            navMenu.classList.toggle('items-stretch');
+            navMenu.classList.toggle('gap-5');
+            navMenu.classList.toggle('absolute');
+            navMenu.classList.toggle('top-20');
+            navMenu.classList.toggle('right-4');
+            navMenu.classList.toggle('left-4');
+            navMenu.classList.toggle('bg-[color:var(--cream)]');
+            navMenu.classList.toggle('shadow-2xl');
+            navMenu.classList.toggle('p-6');
+            navMenu.classList.toggle('rounded-2xl');
+            navMenu.classList.toggle('z-[100]'); 
+            navMenu.classList.toggle('border'); 
+            navMenu.style.borderColor = 'var(--beige)';
+
+            menuToggle.textContent =
+                navMenu.classList.contains('hidden')
+                    ? '☰'
+                    : '✕';
+        });
+    }
+
+    // ---------------- Language System ----------------
+    const STORAGE_KEY = 'siteLanguage';
+
+    function applyLanguage(lang) {
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const translation = element.dataset[lang];
+            if (!translation) return;
+            if (
+                element.tagName === 'INPUT' ||
+                element.tagName === 'TEXTAREA'
+            ) {
+                element.placeholder = translation;
+            } else {
+                element.textContent = translation;
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, lang);
+        updateLanguageButtons(lang);
+    }
+
+    function updateLanguageButtons(lang) {
+        const desktopEN = document.getElementById('lang-label');
+        const desktopSV = document.getElementById('lang-label-alt');
+
+        if (desktopEN && desktopSV) {
+            if (lang === 'en') {
+                desktopEN.classList.remove('opacity-50');
+                desktopSV.classList.add('opacity-50');
+            } else {
+                desktopEN.classList.add('opacity-50');
+                desktopSV.classList.remove('opacity-50');
+            }
+        }
+
+        document.querySelectorAll('.lang-label-m').forEach(el => {
+            if (lang === 'en') {
+                el.classList.remove('opacity-50');
+            } else {
+                el.classList.add('opacity-50');
+            }
+        });
+
+        document.querySelectorAll('.lang-label-m-alt').forEach(el => {
+            if (lang === 'sv') {
+                el.classList.remove('opacity-50');
+            } else {
+                el.classList.add('opacity-50');
+            }
+        });
+    }
+
+    function getCurrentLanguage() {
+        return localStorage.getItem(STORAGE_KEY) || 'en';
+    }
+
+    function toggleLanguage() {
+        const currentLanguage = getCurrentLanguage();
+        const newLanguage = currentLanguage === 'en' ? 'sv' : 'en';
+        applyLanguage(newLanguage);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLanguage = getCurrentLanguage();
+        applyLanguage(savedLanguage);
+
+        const desktopLanguageButton = document.getElementById('lang-toggle');
+        if (desktopLanguageButton) {
+            desktopLanguageButton.addEventListener('click', toggleLanguage);
+        }
+
+        const mobileLanguageButton = document.getElementById('lang-toggle-mobile');
+        if (mobileLanguageButton) {
+            mobileLanguageButton.addEventListener('click', toggleLanguage);
+        }
+    });
+
+    window.setLanguage = applyLanguage;
+    </script>
+</body>
+</html>
