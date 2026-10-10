@@ -1,3 +1,5 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,27 +105,26 @@
     <!-- Header -->
     <header class="py-5 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto w-full flex justify-between items-center z-50 relative gap-3 xl:gap-8">
         
-        <!-- LEFT: Logo Zone (shrink-0 ensures it keeps its space) -->
-        <div class="flex shrink-0 justify-start">
-            <a href="/" class="flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity group">
-                <svg width="36" height="36" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="shrink-0 w-8 h-8 md:w-9 md:h-9 lg:w-[42px] lg:h-[42px] transition-transform duration-500 group-hover:rotate-[8deg]">
-                    <defs>
-                        <linearGradient id="gilt" x1="4" y1="4" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                            <stop offset="0" stop-color="#d9a361"/>
-                            <stop offset="1" stop-color="#96683f"/>
-                        </linearGradient>
-                    </defs>
-                    <circle cx="22" cy="22" r="19.5" stroke="url(#gilt)" stroke-width="1" fill="none" opacity="0.55"/>
-                    <path d="M29.5 12.5 C23 8, 13.5 11, 12.5 22 C13.5 33, 23 36, 29.5 31.5" stroke="#3a2a1c" stroke-width="2.1" fill="none" stroke-linecap="round"/>
-                    <path d="M29.5 12.5 L26.3 13.1 M29.5 12.5 L28.6 15.6" stroke="#3a2a1c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-                    <path d="M29.5 31.5 L26.3 30.9 M29.5 31.5 L28.6 28.4" stroke="#3a2a1c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-                    <path d="M28 20.6 L29.6 17 L31.2 20.6 L34.8 22.2 L31.2 23.8 L29.6 27.4 L28 23.8 L24.4 22.2 Z" fill="url(#gilt)"/>
-                </svg>
-                <span class="flex flex-col leading-tight">
-                    <span class="whitespace-nowrap text-[13px] md:text-base lg:text-lg xl:text-[1.3rem] font-serif font-semibold tracking-tight" style="color:var(--espresso)">Curiosity Tech Matters</span>
-                </span>
-            </a>
-        </div>
+        <!-- LEFT: Logo Zone -->
+<div class="flex shrink-0 justify-start">
+    <a href="/"
+       class="flex items-center gap-2 sm:gap-3 hover:opacity-90 transition-opacity group">
+
+        <img
+            src="{% static 'agency/img/logo.png' %}"
+            alt="Curiosity Tech Matters Logo"
+            class="shrink-0 w-8 h-8 md:w-9 md:h-9 lg:w-[42px] lg:h-[42px] object-contain transition-transform duration-500 group-hover:rotate-[8deg]"
+        >
+
+        <span class="flex flex-col leading-tight">
+            <span class="whitespace-nowrap text-[13px] md:text-base lg:text-lg xl:text-[1.3rem] font-serif font-semibold tracking-tight"
+                  style="color:var(--espresso)">
+                Curiosity Tech Matters
+            </span>
+        </span>
+
+    </a>
+</div>
 
         <!-- CENTER: Desktop Navigation (flex-1 prevents overflow) -->
         <nav id="nav-menu" class="hidden md:flex flex-1 justify-center space-x-4 lg:space-x-8 xl:space-x-10 text-[10px] lg:text-xs xl:text-sm font-medium uppercase tracking-wider mx-2 lg:mx-4">
